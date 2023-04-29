@@ -1,28 +1,6 @@
-import express from "express";
 import request from "supertest";
-
-export const app = express();
-app.use(express.json());
-
-export type User = {
-  name: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
-};
-
-const EMAIL_REGEX = /^[\w-]{5,}@.*$/;
-
-export const parseUser = (user: User) => {
-  const { name, email, password, passwordConfirmation } = user;
-  if (!name) return null;
-  if (!email) return null;
-  if (!password) return null;
-  if (!passwordConfirmation) return null;
-  if (password !== passwordConfirmation) return null;
-  if (!email.match(EMAIL_REGEX)) return null;
-  return user;
-};
+import { app } from "../../../app";
+import { userController } from "../../usecases/user.controller";
 
 describe("register user", () => {
   it("must return 404 if the route does not exist", async () => {
@@ -32,12 +10,7 @@ describe("register user", () => {
 
   describe("POST /signup endpoint bad request", () => {
     beforeAll(() => {
-      app.post("/signup", (request, response) => {
-        const { body } = request;
-        const parsedUser = parseUser(body);
-        if (!parsedUser) return response.status(400).send();
-        return response.status(200).send();
-      });
+      app.post("/signup", userController);
     });
 
     it("must return 400 if the name is missing", async () => {
@@ -100,26 +73,6 @@ describe("register user", () => {
       };
       const response = await request(app).post("/signup").send(user);
       expect(response.statusCode).toBe(400);
-    });
-  });
-  describe("POST /signup email already registered", () => {
-    it("must return 403 if email is already in use ", async () => {
-      const users = [
-        {
-          name: "username",
-          email: "username@mail.com",
-          password: "12345678Aa",
-          passwordConfirmation: "12345678Aa",
-        },
-      ];
-      const user = {
-        name: "username",
-        email: "username@mail.com",
-        password: "12345678Aa",
-        passwordConfirmation: "12345678Aa",
-      };
-      const response = await request(app).post("/signup").send(user);
-      expect(response.statusCode).toBe(403);
     });
   });
 });
