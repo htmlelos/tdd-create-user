@@ -11,12 +11,12 @@
       "noImplicitAny": true,
       "baseUrl": ".",
       "paths": {
-        "@src/*": ["./src/*"]
+        "@/*": ["*"]
       }
   },
   "include": [
       "src/**/*.ts",
-      "test/**/*"
+      "__test__/**/*"
   ],
   "exclude": ["node_modules"]
 }
