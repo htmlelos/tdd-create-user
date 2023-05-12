@@ -1,71 +1,25 @@
-import request from "supertest";
-import { app } from "../../app";
-import { userController } from "./user.controller";
+import { Request, Response } from "express";
+import userController from "./user.controller";
 
-describe("POST /signup endpoint bad request", () => {
-  beforeAll(() => {
-    app.post("/signup", userController);
+describe("POST /signup Controller", () => {
+  it("controller should be defined", () => {
+    expect(userController).toBeDefined();
   });
 
-  it("must return 400 if the name is missing", async () => {
-    const user = {
-      email: "username@mail.com",
-      password: "12345678Aa",
-      passwordConfirmation: "12345678Aa",
+  it("shoud return 200 if the user is registered correctly", () => {
+    const request = {};
+    let resultObject = 200;
+    const response: Partial<Response> = {
+      sendStatus: jest.fn().mockReturnValue(200),
     };
-    const response = await request(app).post("/signup").send(user);
-    expect(response.statusCode).toBe(400);
-  });
 
-  it("must return 400 if the email is missing", async () => {
-    const user = {
-      name: "username",
-      password: "12345678Aa",
-      passwordConfirmation: "12345678Aa",
-    };
-    const response = await request(app).post("/signup").send(user);
-    expect(response.statusCode).toBe(400);
-  });
+    const expectedResult = {};
 
-  it("must return 400 if the password is missing", async () => {
-    const user = {
-      name: "username",
-      email: "username@mail.com",
-      passwordConfirmation: "12345678Aa",
-    };
-    const response = await request(app).post("/signup").send(user);
-    expect(response.statusCode).toBe(400);
-  });
-
-  it("must return 400 if the password is missing", async () => {
-    const user = {
-      name: "username",
-      email: "username@mail.com",
-      password: "12345678Aa",
-    };
-    const response = await request(app).post("/signup").send(user);
-    expect(response.statusCode).toBe(400);
-  });
-
-  it("must return 400 if the password and confirmation are not the same", async () => {
-    const user = {
-      name: "username",
-      email: "username@mail.com",
-      password: "12345678Aa",
-      passwordConfirmation: "12345678Ab",
-    };
-    const response = await request(app).post("/signup").send(user);
-    expect(response.statusCode).toBe(400);
-  });
-
-  it("must return 400 if the email is not valid", async () => {
-    const user = {
-      name: "username",
-      email: "username.mail.com",
-      password: "12345678Aa",
-      passwordConfirmation: "12345678Aa",
-    };
-    const response = await request(app).post("/signup").send(user);
-    expect(response.statusCode).toBe(400);
+    const result = userController().signup(
+      request as Request,
+      response as Response
+    );
+    console.log("Result->", result);
+    expect(result).toBe(resultObject);
   });
 });

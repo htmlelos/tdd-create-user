@@ -1,6 +1,6 @@
 import { User } from "./user.entity";
 
-export const EMAIL_REGEX = /^[\w-]{5,}@.*$/;
+export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const parseUser = (user: User) => {
   const { name, email, password, passwordConfirmation } = user;
